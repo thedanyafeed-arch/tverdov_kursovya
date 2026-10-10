@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Документы{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <h1 class="h4 m-0">Все документы</h1>
+  <a class="btn btn-outline-secondary" href="{% url 'admin_properties_list' %}">← Объекты</a>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    {% if docs_enriched %}
+      <div class="list-group list-group-flush">
+        {% for d, addr in docs_enriched %}
+          <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+              <div class="fw-semibold">{{ d.docType }}</div>
+              <div class="small text-secondary">{{ addr }} · {{ d.filename }}</div>
+            </div>
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'document_download' d.id %}">Скачать</a>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="p-4 text-secondary small">Нет данных.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

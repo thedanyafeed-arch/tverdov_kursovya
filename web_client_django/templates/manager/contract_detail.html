@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Договор{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <div>
+    <div class="small text-secondary">Дата</div>
+    <h1 class="h4 m-0">{{ contract.contractDate }}</h1>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-outline-secondary" href="{% url 'manager_contracts_list' %}">← К списку</a>
+    <a class="btn btn-primary" href="{% url 'contract_download' contract.id %}">Скачать</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h2 class="h6 mb-3">Сведения</h2>
+        <dl class="row mb-0 small">
+          <dt class="col-5 text-secondary">Объект</dt>
+          <dd class="col-7 text-break">{{ property_title }}</dd>
+          <dt class="col-5 text-secondary">Клиент</dt>
+          <dd class="col-7 text-break">{{ client_email }}</dd>
+          <dt class="col-5 text-secondary">Менеджер</dt>
+          <dd class="col-7 text-break">{{ manager_email }}</dd>
+          <dt class="col-5 text-secondary">Статус</dt>
+          <dd class="col-7">{{ contract.status }}</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="card shadow-sm border-danger">
+      <div class="card-body">
+        <h2 class="h6 mb-2 text-danger">Удалить договор</h2>
+        <form method="post" onsubmit="return confirm('Удалить этот договор безвозвратно?');">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="delete">
+          <button class="btn btn-outline-danger btn-sm w-100" type="submit">Удалить</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h2 class="h6 mb-3">Изменить договор</h2>
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="patch">
+          <div class="mb-2">
+            <label class="form-label">Статус</label>
+            {{ patch_form.status }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Дата договора</label>
+            {{ patch_form.contract_date }}
+          </div>
+          <button class="btn btn-primary w-100" type="submit">Применить</button>
+        </form>
+      </div>
+    </div>
+    <details class="card shadow-sm mt-3">
+      <summary class="card-header bg-light">Расширенное изменение связей договора</summary>
+      <div class="card-body border-top">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="full">
+          <div class="row g-2">
+            <div class="col-md-6">
+              <label class="form-label">Объект недвижимости</label>
+              {{ full_form.real_estate_object_id }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Клиент</label>
+              {{ full_form.user_id }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Ответственный (менеджер)</label>
+              {{ full_form.manager_id }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Дата договора</label>
+              {{ full_form.contract_date }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">Статус</label>
+              {{ full_form.status }}
+            </div>
+          </div>
+          <button class="btn btn-outline-primary w-100 mt-3" type="submit">Сохранить полностью</button>
+        </form>
+      </div>
+    </details>
+  </div>
+</div>
+{% endblock %}

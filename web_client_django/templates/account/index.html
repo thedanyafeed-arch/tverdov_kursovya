@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <h1 class="h4 m-0">Личный кабинет</h1>
+  <a class="btn btn-outline-secondary" href="{% url 'profile' %}">Профиль</a>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6 mb-3">История просмотров</h2>
+        {% if history %}
+          <div class="list-group">
+            {% for p in history %}
+              <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                 href="{% url 'property_detail' p.id %}">
+                <div>
+                  <div class="fw-semibold">{{ p.address|default:"Без адреса" }}</div>
+                  <div class="small text-secondary">Статус: {{ p.status }}</div>
+                </div>
+                <span class="badge text-bg-light border">{{ p.discountPrice|default:p.price }}</span>
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-light border mb-0">Пока нет просмотров. Откройте несколько карточек из каталога.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6 mb-3">Договоры</h2>
+        {% if contracts_enriched %}
+          <div class="list-group">
+            {% for c, obj_label, client_email, manager_email in contracts_enriched %}
+              <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                  <div class="fw-semibold">{{ c.contractDate }}</div>
+                  <div class="small text-secondary">{{ obj_label }}</div>
+                  <div class="small text-secondary text-break">Клиент: {{ client_email }}</div>
+                  <div class="small text-secondary text-break">Менеджер: {{ manager_email }}</div>
+                  <div class="small text-secondary">{{ c.status }}</div>
+                </div>
+                <a class="btn btn-sm btn-outline-secondary" href="{% url 'contract_download' c.id %}">
+                  Скачать
+                </a>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-light border mb-0">Договоров пока нет.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

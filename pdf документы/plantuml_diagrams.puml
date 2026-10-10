@@ -1,0 +1,412 @@
+' =============================================================================
+' PlantUML — АРМ застройщика (стиль как в файле «пример.txt»)
+' Вставляйте ОДИН блок @startuml … @enduml за раз.
+' =============================================================================
+
+
+' -----------------------------------------------------------------------------
+' Рисунок 1 — Диаграмма прецедентов (Use Case)
+' -----------------------------------------------------------------------------
+@startuml
+left to right direction
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam backgroundColor white
+skinparam ArrowColor #333333
+skinparam ActorBorderColor #333333
+skinparam UsecaseBorderColor #333333
+skinparam UsecaseBackgroundColor #FEFEFE
+
+actor "Незарегистрированный\nпользователь" as Guest
+actor "Зарегистрированный\nпользователь" as User
+actor "Менеджер" as Manager
+actor "Администратор" as Admin
+
+Guest -up-|> User
+User -up-|> Manager
+Manager -up-|> Admin
+
+rectangle "АРМ Застройщика" {
+
+  package "Публичный доступ" {
+    usecase "Просмотр каталога\nобъектов недвижимости" as UC1
+    usecase "Просмотр карточки\nобъекта" as UC2
+    usecase "Просмотр фото\nи документов объекта" as UC3
+    usecase "Регистрация\nв системе" as UC4
+  }
+
+  package "Зарегистрированный пользователь" {
+    usecase "Авторизация в системе" as UC5
+    usecase "Бронирование\nобъекта" as UC6
+    usecase "Оформление договора\nкупли-продажи" as UC7
+    usecase "Просмотр своих\nдоговоров" as UC8
+    usecase "Личный кабинет\nи профиль" as UC9
+  }
+
+  package "Менеджер" {
+    usecase "Изменение статуса\nобъекта" as UC10
+    usecase "Управление\nдоговорами" as UC11
+    usecase "Просмотр всех\nдоговоров" as UC12
+    usecase "Создание и редактирование\nобъектов" as UC13
+    usecase "Загрузка фото\nи документов" as UC14
+  }
+
+  package "Администратор" {
+    usecase "Добавление объекта\nнедвижимости" as UC15
+    usecase "Редактирование объекта\nнедвижимости" as UC16
+    usecase "Удаление объекта\nнедвижимости" as UC17
+    usecase "Управление\nфотографиями объекта" as UC18
+    usecase "Управление строительной\nдокументацией" as UC19
+    usecase "Управление типами\nнедвижимости" as UC20
+    usecase "Управление\nпользователями" as UC21
+  }
+}
+
+Guest --> UC1
+Guest --> UC2
+Guest --> UC3
+Guest --> UC4
+
+User --> UC5
+User --> UC6
+User --> UC7
+User --> UC8
+User --> UC9
+
+Manager --> UC10
+Manager --> UC11
+Manager --> UC12
+Manager --> UC13
+Manager --> UC14
+
+Admin --> UC15
+Admin --> UC16
+Admin --> UC17
+Admin --> UC18
+Admin --> UC19
+Admin --> UC20
+Admin --> UC21
+
+@enduml
+
+
+' -----------------------------------------------------------------------------
+' Рисунок 2 — ERD (схема базы данных PostgreSQL, фактическая модель проекта)
+' -----------------------------------------------------------------------------
+@startuml
+skinparam linetype ortho
+skinparam backgroundColor white
+skinparam EntityBackgroundColor #FEFEFE
+skinparam EntityBorderColor #333333
+
+entity "role" as role {
+  * id : SERIAL <<PK>>
+  --
+  * name : VARCHAR
+  description : VARCHAR
+}
+
+entity "user" as users {
+  * id : SERIAL <<PK>>
+  --
+  * email : VARCHAR <<UK>>
+  * hashed_password : VARCHAR
+  * is_active : BOOLEAN
+  created_at : VARCHAR
+  * role_id : INTEGER <<FK>>
+}
+
+entity "propertytype" as ptypes {
+  * id : SERIAL <<PK>>
+  --
+  * name : VARCHAR
+}
+
+entity "realestateobject" as props {
+  * id : SERIAL <<PK>>
+  --
+  * property_type_id : INTEGER <<FK>>
+  * total_area : FLOAT
+  finishing : VARCHAR
+  wall_material : VARCHAR
+  floor : INTEGER
+  floors_total : INTEGER
+  * price : NUMERIC
+  discount_price : NUMERIC
+  * status : VARCHAR
+  * address : VARCHAR
+  description : TEXT
+  created_at : VARCHAR
+  updated_at : VARCHAR
+}
+
+entity "photo" as photos {
+  * id : SERIAL <<PK>>
+  --
+  * real_estate_object_id : INTEGER <<FK>>
+  * file_path : VARCHAR
+  filename : VARCHAR
+  uploaded_at : VARCHAR
+}
+
+entity "document" as docs {
+  * id : SERIAL <<PK>>
+  --
+  * real_estate_object_id : INTEGER <<FK>>
+  * file_path : VARCHAR
+  filename : VARCHAR
+  * doc_type : VARCHAR
+  uploaded_at : VARCHAR
+}
+
+entity "contract" as contracts {
+  * id : SERIAL <<PK>>
+  --
+  * real_estate_object_id : INTEGER <<FK>>
+  * user_id : INTEGER <<FK>>
+  * manager_id : INTEGER <<FK>>
+  * contract_date : VARCHAR
+  * status : VARCHAR
+  generated_file_path : VARCHAR
+  created_at : VARCHAR
+}
+
+role ||--o{ users : "role_id"
+ptypes ||--o{ props : "property_type_id"
+props ||--o{ photos : "real_estate_object_id"
+props ||--o{ docs : "real_estate_object_id"
+props ||--o{ contracts : "real_estate_object_id"
+users ||--o{ contracts : "user_id"
+users ||--o{ contracts : "manager_id"
+
+@enduml
+
+
+' -----------------------------------------------------------------------------
+' Рисунок 3 — Архитектура системы (п. 2.4)
+' -----------------------------------------------------------------------------
+@startuml
+left to right direction
+skinparam backgroundColor white
+skinparam ArrowColor #333333
+skinparam ComponentBorderColor #333333
+skinparam ComponentBackgroundColor #FEFEFE
+skinparam DatabaseBorderColor #333333
+skinparam DatabaseBackgroundColor #FEFEFE
+
+actor "Пользователь" as User
+
+rectangle "АРМ Застройщика" {
+
+  package "Слой представления" {
+    component "Django Web Client\n(views, forms, templates)" as Django
+    component "FastAPI Routers\n/api/v2" as Routers
+  }
+
+  package "Слой бизнес-логики" {
+    component "Controllers" as Controllers
+    component "Security\nJWT, Argon2, RBAC" as Security
+    component "Pydantic Schemas" as Schemas
+  }
+
+  package "Слой данных" {
+    component "SQLModel ORM" as ORM
+    database "PostgreSQL" as DB
+    folder "uploads" as FS
+  }
+}
+
+User --> Django : HTTP
+Django --> Routers : REST\nBearer JWT
+Routers --> Controllers
+Routers --> Security
+Routers --> Schemas
+Controllers --> ORM
+Controllers --> FS
+ORM --> DB
+
+@enduml
+
+
+' -----------------------------------------------------------------------------
+' Рисунок 4 — Диаграмма последовательности: авторизация
+' -----------------------------------------------------------------------------
+@startuml
+skinparam backgroundColor white
+skinparam ArrowColor #333333
+skinparam ParticipantBorderColor #333333
+skinparam ParticipantBackgroundColor #FEFEFE
+
+actor "Пользователь" as U
+participant "Django" as DJ
+participant "FastAPI\n/api/v2/auth" as API
+database "PostgreSQL" as DB
+
+autonumber
+
+U -> DJ : email, пароль
+DJ -> API : POST /auth/login
+API -> DB : SELECT user
+alt неверные данные
+  API --> DJ : 401
+  DJ --> U : сообщение об ошибке
+else успех
+  API -> API : JWT access_token
+  API --> DJ : token
+  DJ -> DJ : session
+  DJ --> U : redirect /catalog/
+end
+
+@enduml
+
+
+' -----------------------------------------------------------------------------
+' Рисунок Б.1 — Алгоритм авторизации и выдачи JWT
+' -----------------------------------------------------------------------------
+@startuml
+skinparam backgroundColor white
+skinparam ArrowColor #333333
+skinparam ActivityBorderColor #333333
+skinparam ActivityBackgroundColor #FEFEFE
+skinparam ActivityDiamondBackgroundColor #FFF8DC
+skinparam ActivityStartColor #333333
+skinparam ActivityEndColor #333333
+
+start
+
+:Пользователь открывает страницу входа /login/;
+:Вводит email и пароль;
+:Django отправляет POST /api/v2/auth/login\n(username=email, password);
+
+:FastAPI получает запрос;
+:Поиск пользователя в таблице user по email;
+
+if (Пользователь найден?) then (нет)
+  :Вернуть 401 Unauthorized\n«Неверный email или пароль»;
+  :Показать сообщение об ошибке;
+  stop
+else (да)
+  :Проверить пароль через Argon2;
+  if (Пароль совпадает?) then (нет)
+    :Вернуть 401 Unauthorized\n«Неверный email или пароль»;
+    :Показать сообщение об ошибке;
+    stop
+  else (да)
+    :Сгенерировать access_token\n(срок жизни 30 мин, sub = email, role);
+    :Вернуть токен клиенту в формате JSON;
+    :Django сохраняет в сессии:\naccess_token, role_name, user_info;
+    :Редирект → каталог (/catalog/);
+    :В последующих запросах Django подставляет\nAuthorization: Bearer <access_token>;
+    :FastAPI декодирует токен, извлекает email и role;
+    if (Токен действителен?) then (нет)
+      :Вернуть 401, сбросить сессию Django;
+      :Редирект на страницу входа;
+      stop
+    else (да)
+      :Выполнить запрошенную операцию;
+    endif
+  endif
+endif
+
+stop
+@enduml
+
+
+' -----------------------------------------------------------------------------
+' Рисунок Б.2 — Алгоритм добавления объекта недвижимости с фотографиями
+' -----------------------------------------------------------------------------
+@startuml
+skinparam backgroundColor white
+skinparam ArrowColor #333333
+skinparam ActivityBorderColor #333333
+skinparam ActivityBackgroundColor #FEFEFE
+skinparam ActivityDiamondBackgroundColor #FFF8DC
+skinparam ActivityStartColor #333333
+skinparam ActivityEndColor #333333
+
+start
+
+:Администратор или менеджер авторизуется\n(роль manager/admin, JWT);
+:Переход на /admin_panel/properties/create/;
+:Загрузка списка типов недвижимости\nчерез API /property-types;
+:Отображение формы добавления объекта;
+
+:Пользователь заполняет форму:\n— тип объекта\n— площадь, этаж\n— материал стен, тип отделки\n— основная цена\n— скидочная цена (опционально)\n— адрес, описание;
+
+:Отправка POST-запроса в Django;
+:Django вызывает POST /api/v2/properties;
+
+if (Данные валидны?) then (нет)
+  :Форма отображается повторно\nс сообщениями об ошибках;
+  :Пользователь исправляет данные;
+  stop
+else (да)
+  :FastAPI создаёт запись в таблице realestateobject\nсо статусом «в продаже»;
+  :API возвращает 201 Created\nи данные созданного объекта;
+  :Редирект на список объектов\nили загрузку медиафайлов;
+
+  repeat
+    :Выбор файла фотографии;
+    :POST /api/v2/photos/upload/{property_id};
+
+    if (Файл загружен?) then (нет)
+      :Показать сообщение об ошибке\nчерез messages.error;
+    else (да)
+      :Сохранение файла в /uploads/photos;
+      :Создание записи в таблице photo;
+      :Показать сообщение об успехе;
+    endif
+
+  repeat while (Загрузить ещё фото?) is (да)
+  -> нет;
+
+  :Объект недвижимости с фотографиями создан;
+  :Редирект на карточку объекта;
+endif
+
+stop
+@enduml
+
+
+' -----------------------------------------------------------------------------
+' Рисунок Б.3 — Алгоритм формирования договора купли-продажи
+' -----------------------------------------------------------------------------
+@startuml
+skinparam backgroundColor white
+skinparam ArrowColor #333333
+skinparam ActivityBorderColor #333333
+skinparam ActivityBackgroundColor #FEFEFE
+skinparam ActivityDiamondBackgroundColor #FFF8DC
+skinparam ActivityStartColor #333333
+skinparam ActivityEndColor #333333
+
+start
+
+:Пользователь авторизуется в системе;
+:Выбор объекта недвижимости\nсо статусом «в продаже»;
+
+:POST /api/v2/contracts/generate/{property_id};
+
+:FastAPI получает объект и пользователей;
+:Назначение менеджера (роль manager/admin);
+
+if (Объект и менеджер найдены?) then (нет)
+  :Вернуть 404 / 500;
+  :Показать сообщение через messages.error;
+  stop
+else (да)
+  :Генерация документа .docx\n(python-docx):\n— данные покупателя и менеджера\n— характеристики объекта\n— цена и дата договора;
+  :Сохранение файла в /uploads/contracts;
+  :Создание записи в таблице contract\n(статус «создан»);
+  :API возвращает 201 Created;
+endif
+
+:Пользователь нажимает «Скачать договор»;
+:GET /api/v2/contracts/{id}/download;
+
+:FastAPI читает файл с диска;
+:Django оборачивает ответ в FileResponse;
+:Браузер загружает готовый файл contract_*.docx;
+
+stop
+@enduml

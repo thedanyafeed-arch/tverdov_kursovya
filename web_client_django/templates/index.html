@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}АРМ Застройщика{% endblock %}
+
+{% block content %}
+<div class="row g-4 align-items-center">
+  <div class="col-lg-7">
+    <div class="p-4 p-lg-5 bg-white rounded-4 shadow-sm">
+      <h1 class="display-6 fw-semibold mb-3">АРМ застройщика</h1>
+      <p class="text-secondary mb-4">
+        Каталог недвижимости, техническая документация по объектам и оформление договоров в одном месте.
+      </p>
+      <div class="d-flex gap-2 flex-wrap">
+        <a class="btn btn-primary btn-lg" href="{% url 'catalog' %}">Перейти в каталог</a>
+        {% if not is_api_authenticated %}
+          <a class="btn btn-outline-secondary btn-lg" href="{% url 'login' %}">Войти</a>
+        {% else %}
+          <a class="btn btn-outline-secondary btn-lg" href="{% url 'account' %}">Личный кабинет</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="metric-card p-4 rounded-4 shadow-sm border bg-white">
+      <div class="fw-semibold">Как начать</div>
+      <div class="text-secondary mt-2">
+        Подберите объект по типу и цене в каталоге, откройте карточку и ознакомьтесь с описанием и вложениями.
+      </div>
+      <div class="mt-3">
+        <a href="{% url 'catalog' %}" class="link-primary">Открыть каталог →</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

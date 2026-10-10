@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Администрирование — объекты{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <h1 class="h4 m-0">Объекты недвижимости</h1>
+  <div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-primary" href="{% url 'admin_property_create' %}">Создать объект</a>
+    <a class="btn btn-outline-secondary" href="{% url 'admin_property_types' %}">Типы недвижимости</a>
+    {% if is_admin %}<a class="btn btn-outline-secondary" href="{% url 'admin_users' %}">Пользователи</a>{% endif %}
+    <a class="btn btn-outline-secondary" href="{% url 'admin_all_photos' %}">Фотографии</a>
+    <a class="btn btn-outline-secondary" href="{% url 'admin_all_documents' %}">Документы</a>
+    <a class="btn btn-outline-secondary" href="{% url 'manager_panel' %}">Панель менеджера</a>
+    <a class="btn btn-outline-secondary" href="{% url 'catalog' %}">Каталог</a>
+  </div>
+</div>
+
+{% if properties %}
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Адрес</th>
+              <th>Статус</th>
+              <th>Цена</th>
+              <th class="text-end">Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in properties %}
+              <tr>
+                <td>{{ p.address|default:"—" }}</td>
+                <td><span class="badge text-bg-light border">{{ p.status }}</span></td>
+                <td>{{ p.discountPrice|default:p.price }}</td>
+                <td class="text-end">
+                  <div class="btn-group btn-group-sm">
+                    <a class="btn btn-outline-secondary" href="{% url 'property_detail' p.id %}">Карточка</a>
+                    <a class="btn btn-outline-primary" href="{% url 'admin_property_edit' p.id %}">Редактировать</a>
+                    <form method="post" action="{% url 'admin_property_delete' p.id %}">
+                      {% csrf_token %}
+                      <button class="btn btn-outline-danger" type="submit"
+                              onclick="return confirm('Удалить этот объект?');">
+                        Удалить
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% else %}
+  <div class="alert alert-light border">Нет объектов.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Панель менеджера{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <h1 class="h4 m-0">Панель менеджера</h1>
+  <div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-primary" href="{% url 'admin_property_create' %}">Создать объект</a>
+    <a class="btn btn-outline-secondary" href="{% url 'admin_properties_list' %}">Объекты CRM</a>
+    <a class="btn btn-outline-secondary" href="{% url 'admin_property_types' %}">Типы недвижимости</a>
+    <a class="btn btn-outline-secondary" href="{% url 'manager_contracts_list' %}">Договоры</a>
+    <a class="btn btn-outline-secondary" href="{% url 'catalog' %}">Каталог</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6 mb-3">Статусы объектов</h2>
+        {% if properties %}
+          <div class="list-group">
+            {% for p in properties %}
+              <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                  <div>
+                    <div class="fw-semibold">{{ p.address|default:"Адрес не указан" }}</div>
+                    <div class="small text-secondary">Текущий статус: <b>{{ p.status }}</b></div>
+                  </div>
+                  <a class="btn btn-sm btn-outline-primary" href="{% url 'property_detail' p.id %}">Карточка</a>
+                </div>
+                <form class="row g-2 align-items-end mt-2" method="post" action="{% url 'manager_change_status' p.id %}">
+                  {% csrf_token %}
+                  <div class="col-md-6">
+                    <label class="form-label small">Новый статус</label>
+                    <select class="form-select form-select-sm" name="new_status" required>
+                      <option value="в продаже">в продаже</option>
+                      <option value="забронирован">забронирован</option>
+                      <option value="продан">продан</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <button class="btn btn-sm btn-primary w-100" type="submit">Сохранить</button>
+                  </div>
+                </form>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-light border mb-0">Объекты не найдены.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h6 mb-3">Генерация договора</h2>
+        <form method="post" action="{% url 'manager_generate_contract' %}">
+          {% csrf_token %}
+          <div class="mb-2">
+            <label class="form-label">Объект</label>
+            <select class="form-select" name="property_id" required>
+              {% for p in properties_for_select %}
+                <option value="{{ p.id }}">{{ p.address|default:"Адрес не указан" }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button class="btn btn-primary w-100" type="submit">Сгенерировать</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+          <h3 class="h6 m-0">Договоры</h3>
+          <a class="btn btn-sm btn-outline-secondary" href="{% url 'manager_contracts_list' %}">Все договоры</a>
+        </div>
+        {% if contracts_enriched %}
+          <div class="list-group">
+            {% for c, obj_label, client_email, manager_email in contracts_enriched|slice:":8" %}
+              <div class="list-group-item">
+                <div class="small text-secondary">{{ c.contractDate }} · {{ c.status }}</div>
+                <div class="fw-semibold">{{ obj_label }}</div>
+                <div class="small mt-1">Клиент: <span class="text-break">{{ client_email }}</span></div>
+                <div class="small">Менеджер: <span class="text-break">{{ manager_email }}</span></div>
+                <div class="mt-2">
+                  <a class="btn btn-sm btn-outline-primary" href="{% url 'manager_contract_detail' c.id %}">Подробнее</a>
+                  <a class="btn btn-sm btn-outline-secondary" href="{% url 'contract_download' c.id %}">Скачать</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="small text-secondary">Нет данных.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

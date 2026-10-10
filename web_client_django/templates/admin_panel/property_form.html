@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <h1 class="h4 m-0">{{ title }}</h1>
+  <a class="btn btn-outline-secondary" href="{% url 'admin_properties_list' %}">← К списку</a>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body p-4">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Тип недвижимости</label>
+          {{ form.property_type_id }}
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Площадь</label>
+          {{ form.total_area }}
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Статус</label>
+          {{ form.status }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Адрес</label>
+          {{ form.address }}
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Этаж</label>
+          {{ form.floor }}
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Этажность</label>
+          {{ form.floors_total }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Отделка</label>
+          {{ form.finishing }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Материал стен</label>
+          {{ form.wall_material }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Цена</label>
+          {{ form.price }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Цена со скидкой</label>
+          {{ form.discount_price }}
+        </div>
+        <div class="col-12">
+          <label class="form-label">Описание</label>
+          {{ form.description }}
+        </div>
+      </div>
+      <button class="btn btn-primary mt-3" type="submit">Сохранить</button>
+    </form>
+
+    {% if created_property %}
+      <hr class="my-4">
+      <h2 class="h6 mb-2">Фотографии</h2>
+      <form method="post" enctype="multipart/form-data" class="row g-2 align-items-end">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="upload_photos">
+        <input type="hidden" name="property_id" value="{{ created_property.id }}">
+        <div class="col-md-9">
+          {{ photos_form.files }}
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-outline-primary w-100" type="submit">Загрузить фото</button>
+        </div>
+      </form>
+    {% endif %}
+
+    {% if property_id_edit %}
+      <hr class="my-4">
+      <h2 class="h6 mb-3">Фотографии</h2>
+      {% if photos %}
+        <div class="row g-3 mb-3">
+          {% for ph in photos %}
+            <div class="col-md-4">
+              <div class="border rounded-3 p-2">
+                <img class="img-fluid rounded-2" alt="" src="{{ ph.absoluteUrl }}">
+                <form method="post" enctype="multipart/form-data" class="mt-2 d-flex gap-2 flex-wrap align-items-start">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="update_photo">
+                  <input type="hidden" name="photo_id" value="{{ ph.id }}">
+                  <input class="form-control form-control-sm flex-grow-1" type="file" name="file" required>
+                  <button class="btn btn-sm btn-outline-primary" type="submit">Заменить</button>
+                </form>
+                <form method="post" class="mt-1">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="delete_photo">
+                  <input type="hidden" name="photo_id" value="{{ ph.id }}">
+                  <button class="btn btn-sm btn-outline-danger w-100" type="submit">Удалить</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <div class="row g-2 align-items-end mb-3">
+        <form method="post" enctype="multipart/form-data" class="row g-2 align-items-end col-12 mb-3">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="upload_photo">
+          <div class="col-md-8">{{ photo_upload_form.file }}</div>
+          <div class="col-md-4"><button class="btn btn-primary w-100" type="submit">Загрузить файл</button></div>
+        </form>
+      </div>
+      <div class="row g-2 align-items-end">
+        <form method="post" enctype="multipart/form-data" class="row g-2 align-items-end">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="upload_photos">
+          <div class="col-md-9">{{ bulk_photos_form.files }}</div>
+          <div class="col-md-3"><button class="btn btn-outline-primary w-100" type="submit">Загрузить несколько</button></div>
+        </form>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

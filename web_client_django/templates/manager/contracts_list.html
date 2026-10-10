@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Договоры{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <h1 class="h4 m-0">Договоры</h1>
+  <a class="btn btn-outline-secondary" href="{% url 'manager_panel' %}">← Панель менеджера</a>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    {% if contracts_enriched %}
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Дата</th>
+              <th>Объект</th>
+              <th>Клиент</th>
+              <th>Менеджер</th>
+              <th>Статус</th>
+              <th class="text-end">Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c, obj_label, client_email, manager_email in contracts_enriched %}
+              <tr>
+                <td>{{ c.contractDate }}</td>
+                <td>{{ obj_label }}</td>
+                <td class="small text-break">{{ client_email }}</td>
+                <td class="small text-break">{{ manager_email }}</td>
+                <td><span class="badge text-bg-light border">{{ c.status }}</span></td>
+                <td class="text-end">
+                  <div class="btn-group btn-group-sm">
+                    <a class="btn btn-outline-primary" href="{% url 'manager_contract_detail' c.id %}">Открыть</a>
+                    <a class="btn btn-outline-secondary" href="{% url 'contract_download' c.id %}">Скачать</a>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="p-4 text-secondary small">Договоров пока нет.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

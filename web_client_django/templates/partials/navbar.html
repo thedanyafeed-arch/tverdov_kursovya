@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg navbar-dark glass-nav">
+    <div class="container">
+        <a class="navbar-brand fw-semibold" href="{% url 'index' %}">АРМ Застройщика</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="{% url 'catalog' %}">Каталог</a></li>
+                {% if is_api_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'account' %}">Кабинет</a></li>
+                    {% if can_manage %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'admin_properties_list' %}">Объекты CRM</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'manager_panel' %}">Менеджер</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'manager_contracts_list' %}">Договоры</a></li>
+                    {% endif %}
+                    {% if is_admin %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'admin_users' %}">Пользователи</a></li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+            <div class="d-flex align-items-center gap-3">
+                {% if current_user %}
+                    <span class="text-light small">Пользователь: {{ current_user.email }}{% if role_name %} ({{ role_name }}){% endif %}</span>
+                {% endif %}
+                {% if is_api_authenticated %}
+                    <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}">Выйти</a>
+                {% else %}
+                    <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Войти</a>
+                    <a class="btn btn-light btn-sm" href="{% url 'register' %}">Регистрация</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
