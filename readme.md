@@ -10,9 +10,9 @@
 - Публичный просмотр объектов и документов (гости)
 
 ## Запуск
-1. Создать БД `real_estate_api_db` в PostgreSQL
+1. Создать БД `tverdov_api_db` в PostgreSQL
 2. Заполнить `.env`
 3. Установить зависимости: `pip install -r requirements.txt`
 4. Запустить: `uvicorn app.main:app_v1 --reload`
 
-Документация: http://localhost:8000/api/v1/docs
+Документация: http://localhost:8000/api/v2/docs
