@@ -1,0 +1,451 @@
+{
+  "summary": {
+    "total": 40,
+    "passed": 40,
+    "failed": 0,
+    "failures": []
+  },
+  "results": [
+    {
+      "name": "auth login user",
+      "method": "POST",
+      "path": "/api/v2/auth/login",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyX3Rlc3RAZXhhbXBsZS5jb20iLCJyb2xlIjoidXNlciIsImV4cCI6MTc3NzEzMDE2N30.yBpIu9vrHCX4-GNiKtuBeLmR5waBdquCZhJPDGCH_yA\",\"token_type\":\"bearer\"}"
+    },
+    {
+      "name": "auth login manager",
+      "method": "POST",
+      "path": "/api/v2/auth/login",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYW5hZ2VyX3Rlc3RAZXhhbXBsZS5jb20iLCJyb2xlIjoibWFuYWdlciIsImV4cCI6MTc3NzEzMDE2N30.C7xf38Ny1YwFKGATUmRHzsnEIERC_LcD2U0TFbakfbs\",\"token_type\":\"bearer\"}"
+    },
+    {
+      "name": "auth login admin",
+      "method": "POST",
+      "path": "/api/v2/auth/login",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"access_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbl90ZXN0QGV4YW1wbGUuY29tIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzc3MTMwMTY3fQ.UMYqzYmYS3uDU0Q1pSvvZmdsMXLfwIP8YQ2-UtE3vHw\",\"token_type\":\"bearer\"}"
+    },
+    {
+      "name": "auth register",
+      "method": "POST",
+      "path": "/api/v2/auth/register",
+      "status": 201,
+      "expected": [
+        201
+      ],
+      "ok": true,
+      "detail": "{\"message\":\"Пользователь успешно зарегистрирован\",\"user_id\":9}"
+    },
+    {
+      "name": "auth me",
+      "method": "GET",
+      "path": "/api/v2/auth/me",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"id\":8,\"email\":\"user_test@example.com\",\"is_active\":true,\"created_at\":\"2026-04-25T19:46:07.767517\",\"role_id\":3}"
+    },
+    {
+      "name": "auth update me",
+      "method": "PATCH",
+      "path": "/api/v2/auth/me",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"message\":\"Профиль обновлен\",\"user_id\":8,\"email\":\"user_test@example.com\"}"
+    },
+    {
+      "name": "auth logout",
+      "method": "POST",
+      "path": "/api/v2/auth/logout",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"message\":\"Выход выполнен\"}"
+    },
+    {
+      "name": "property-types list",
+      "method": "GET",
+      "path": "/api/v2/property-types",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "[{\"name\":\"квартира\",\"id\":1},{\"name\":\"дом\",\"id\":2},{\"name\":\"коммерческая недвижимость\",\"id\":3}]"
+    },
+    {
+      "name": "property-types create",
+      "method": "POST",
+      "path": "/api/v2/property-types",
+      "status": 201,
+      "expected": [
+        201,
+        409
+      ],
+      "ok": true,
+      "detail": "{\"name\":\"таунхаус\",\"id\":5}"
+    },
+    {
+      "name": "property-types update",
+      "method": "PUT",
+      "path": "/api/v2/property-types/5",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"name\":\"таунхаус-plus\",\"id\":5}"
+    },
+    {
+      "name": "properties create",
+      "method": "POST",
+      "path": "/api/v2/properties",
+      "status": 201,
+      "expected": [
+        201
+      ],
+      "ok": true,
+      "detail": "{\"propertyTypeId\":1,\"totalArea\":45.5,\"wallMaterial\":\"кирпич\",\"floorsTotal\":9,\"discountPrice\":\"3300000.0\",\"address\":\"Екатеринбург, Тестовая 1\",\"createdAt\":null,\"id\":2,\"finishing\":\"чистовая\",\"floor\":3,\"price\":\"3500000.0\",\"status\":\"в продаже\",\"description\":\"тестовый объект\",\"updatedAt\":null}"
+    },
+    {
+      "name": "properties list",
+      "method": "GET",
+      "path": "/api/v2/properties",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"items\":[{\"propertyTypeId\":1,\"totalArea\":45.5,\"wallMaterial\":\"кирпич\",\"floorsTotal\":9,\"discountPrice\":\"3300000.0\",\"address\":\"Екатеринбург, Тестовая 1\",\"createdAt\":null,\"id\":2,\"finishing\":\"чистовая\",\"floor\":3,\"price\":\"3500000.0\",\"status\":\"в продаже\",\"description\":\"тестовый объект\",\"updatedAt\":null}]"
+    },
+    {
+      "name": "properties list min_price=0",
+      "method": "GET",
+      "path": "/api/v2/properties?min_price=0",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"items\":[{\"propertyTypeId\":1,\"totalArea\":45.5,\"wallMaterial\":\"кирпич\",\"floorsTotal\":9,\"discountPrice\":\"3300000.0\",\"address\":\"Екатеринбург, Тестовая 1\",\"createdAt\":null,\"id\":2,\"finishing\":\"чистовая\",\"floor\":3,\"price\":\"3500000.0\",\"status\":\"в продаже\",\"description\":\"тестовый объект\",\"updatedAt\":null}]"
+    },
+    {
+      "name": "properties get by id",
+      "method": "GET",
+      "path": "/api/v2/properties/2",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"propertyTypeId\":1,\"totalArea\":45.5,\"wallMaterial\":\"кирпич\",\"floorsTotal\":9,\"discountPrice\":\"3300000.0\",\"address\":\"Екатеринбург, Тестовая 1\",\"createdAt\":null,\"id\":2,\"finishing\":\"чистовая\",\"floor\":3,\"price\":\"3500000.0\",\"status\":\"в продаже\",\"description\":\"тестовый объект\",\"updatedAt\":null}"
+    },
+    {
+      "name": "properties patch status",
+      "method": "PATCH",
+      "path": "/api/v2/properties/2/status",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"propertyTypeId\":1,\"totalArea\":45.5,\"wallMaterial\":\"кирпич\",\"floorsTotal\":9,\"discountPrice\":\"3300000.0\",\"address\":\"Екатеринбург, Тестовая 1\",\"createdAt\":null,\"id\":2,\"finishing\":\"чистовая\",\"floor\":3,\"price\":\"3500000.0\",\"status\":\"забронирован\",\"description\":\"тестовый объект\",\"updatedAt\":\"2026-04-25T1"
+    },
+    {
+      "name": "properties reserve conflict",
+      "method": "POST",
+      "path": "/api/v2/properties/2/reserve",
+      "status": 409,
+      "expected": [
+        409
+      ],
+      "ok": true,
+      "detail": "{\"detail\":\"Объект уже забронирован\"}"
+    },
+    {
+      "name": "properties put replace",
+      "method": "PUT",
+      "path": "/api/v2/properties/2",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"propertyTypeId\":1,\"totalArea\":46.0,\"wallMaterial\":\"кирпич\",\"floorsTotal\":9,\"discountPrice\":\"3200000.0\",\"address\":\"Екатеринбург, Тестовая 2\",\"createdAt\":null,\"id\":2,\"finishing\":\"чистовая\",\"floor\":4,\"price\":\"3600000.0\",\"status\":\"в продаже\",\"description\":\"updated\",\"updatedAt\":\"2026-04-25T19:46:08.132"
+    },
+    {
+      "name": "photos upload",
+      "method": "POST",
+      "path": "/api/v2/photos/upload/2",
+      "status": 201,
+      "expected": [
+        201
+      ],
+      "ok": true,
+      "detail": "{\"id\":2,\"realEstateObjectId\":2,\"filePath\":\"uploads/photos/14dd67692ec943f9b8c5d9a06f296082_photo.jpg\",\"filename\":\"photo.jpg\",\"uploadedAt\":null}"
+    },
+    {
+      "name": "photos list all",
+      "method": "GET",
+      "path": "/api/v2/photos",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "[{\"id\":2,\"realEstateObjectId\":2,\"filePath\":\"uploads/photos/14dd67692ec943f9b8c5d9a06f296082_photo.jpg\",\"filename\":\"photo.jpg\",\"uploadedAt\":null}]"
+    },
+    {
+      "name": "photos list by property",
+      "method": "GET",
+      "path": "/api/v2/photos/2",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "[{\"id\":2,\"realEstateObjectId\":2,\"filePath\":\"uploads/photos/14dd67692ec943f9b8c5d9a06f296082_photo.jpg\",\"filename\":\"photo.jpg\",\"uploadedAt\":null}]"
+    },
+    {
+      "name": "photos update",
+      "method": "PUT",
+      "path": "/api/v2/photos/2",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"id\":2,\"realEstateObjectId\":2,\"filePath\":\"uploads/photos/e6775a269d964999a5eb858961020591_photo2.jpg\",\"filename\":\"photo2.jpg\",\"uploadedAt\":null}"
+    },
+    {
+      "name": "documents upload",
+      "method": "POST",
+      "path": "/api/v2/documents/upload/2",
+      "status": 201,
+      "expected": [
+        201
+      ],
+      "ok": true,
+      "detail": "{\"id\":2,\"realEstateObjectId\":2,\"filePath\":\"uploads/documents/90c8b1d4a2c34c90b647a7fca4c26642_doc.pdf\",\"filename\":\"doc.pdf\",\"docType\":\"схема\",\"uploadedAt\":null}"
+    },
+    {
+      "name": "documents list by property",
+      "method": "GET",
+      "path": "/api/v2/documents/2",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "[{\"id\":2,\"realEstateObjectId\":2,\"filePath\":\"uploads/documents/90c8b1d4a2c34c90b647a7fca4c26642_doc.pdf\",\"filename\":\"doc.pdf\",\"docType\":\"схема\",\"uploadedAt\":null}]"
+    },
+    {
+      "name": "documents list all",
+      "method": "GET",
+      "path": "/api/v2/documents",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "[{\"id\":2,\"realEstateObjectId\":2,\"filePath\":\"uploads/documents/90c8b1d4a2c34c90b647a7fca4c26642_doc.pdf\",\"filename\":\"doc.pdf\",\"docType\":\"схема\",\"uploadedAt\":null}]"
+    },
+    {
+      "name": "documents download",
+      "method": "GET",
+      "path": "/api/v2/documents/download/2",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "%PDF-1.4 fake"
+    },
+    {
+      "name": "documents update",
+      "method": "PUT",
+      "path": "/api/v2/documents/2",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"id\":2,\"realEstateObjectId\":2,\"filePath\":\"uploads/documents/01bfc36c4517477cbd874a30baa7423b_doc2.pdf\",\"filename\":\"doc2.pdf\",\"docType\":\"план\",\"uploadedAt\":null}"
+    },
+    {
+      "name": "contracts generate",
+      "method": "POST",
+      "path": "/api/v2/contracts/generate/2",
+      "status": 201,
+      "expected": [
+        201
+      ],
+      "ok": true,
+      "detail": "{\"id\":2,\"realEstateObjectId\":2,\"userId\":8,\"managerId\":6,\"contractDate\":\"2026-04-25\",\"status\":\"создан\",\"generatedFilePath\":\"uploads/contracts/contract_2_8.docx\",\"createdAt\":\"2026-04-25T14:46:08.260224+00:00\"}"
+    },
+    {
+      "name": "contracts mine",
+      "method": "GET",
+      "path": "/api/v2/contracts",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "[{\"id\":2,\"realEstateObjectId\":2,\"userId\":8,\"managerId\":6,\"contractDate\":\"2026-04-25\",\"status\":\"создан\",\"generatedFilePath\":\"uploads/contracts/contract_2_8.docx\",\"createdAt\":\"2026-04-25T14:46:08.260224+00:00\"}]"
+    },
+    {
+      "name": "contracts all",
+      "method": "GET",
+      "path": "/api/v2/contracts/all",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "[{\"id\":2,\"realEstateObjectId\":2,\"userId\":8,\"managerId\":6,\"contractDate\":\"2026-04-25\",\"status\":\"создан\",\"generatedFilePath\":\"uploads/contracts/contract_2_8.docx\",\"createdAt\":\"2026-04-25T14:46:08.260224+00:00\"}]"
+    },
+    {
+      "name": "contracts get",
+      "method": "GET",
+      "path": "/api/v2/contracts/2",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"id\":2,\"realEstateObjectId\":2,\"userId\":8,\"managerId\":6,\"contractDate\":\"2026-04-25\",\"status\":\"создан\",\"generatedFilePath\":\"uploads/contracts/contract_2_8.docx\",\"createdAt\":\"2026-04-25T14:46:08.260224+00:00\"}"
+    },
+    {
+      "name": "contracts download",
+      "method": "GET",
+      "path": "/api/v2/contracts/2/download",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000ĝ�\\�R���\u0001\u0000\u0000�\u0006\u0000\u0000\u0013\u0000\u0000\u0000[Content_Types].xml��=o�0\u0010���\nA��@�ӡ\b\n�\u0019�16\u0001�]i�$�%�\u0004����>�\u0012\u000bE�D\u000e�,\\���>\u0014\u0001q~�;�m ��X\u0017�լ�\u0000��\u0006ۺ���-/��X���#��\u0016��\\|�/�\u0001(�E��9|\u0017�T\u0007NR�\u0003`�l㣓L���\bR��-����7�<2 ��\u0018�b~\r�\\[�nz\u0006\u001cD�\u0001�<�zژ��ܸ\u0004\u0018\u0006bo&��\u0017\u0019\u0019�5J��(6�_���VU\u0004;��\u0004:�}�!M�.x��m F�!���H\u0007u.Ԛػ?�\n���\u000ft^�Oۣ��(�^�\u001d W#4� ���}���j(\u00162"
+    },
+    {
+      "name": "contracts patch",
+      "method": "PATCH",
+      "path": "/api/v2/contracts/2",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"id\":2,\"realEstateObjectId\":2,\"userId\":8,\"managerId\":6,\"contractDate\":\"2026-04-25\",\"status\":\"подписан\",\"generatedFilePath\":\"uploads/contracts/contract_2_8.docx\",\"createdAt\":\"2026-04-25T14:46:08.260224+00:00\"}"
+    },
+    {
+      "name": "contracts put",
+      "method": "PUT",
+      "path": "/api/v2/contracts/2",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"id\":2,\"realEstateObjectId\":2,\"userId\":6,\"managerId\":7,\"contractDate\":\"2026-04-25\",\"status\":\"подписан\",\"generatedFilePath\":\"uploads/contracts/contract_2_8.docx\",\"createdAt\":\"2026-04-25T14:46:08.260224+00:00\"}"
+    },
+    {
+      "name": "auth assign role",
+      "method": "PATCH",
+      "path": "/api/v2/auth/users/9/role",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "ok": true,
+      "detail": "{\"message\":\"Роль 'manager' успешно назначена пользователю\",\"user_id\":9,\"new_role\":\"manager\"}"
+    },
+    {
+      "name": "documents delete",
+      "method": "DELETE",
+      "path": "/api/v2/documents/2",
+      "status": 204,
+      "expected": [
+        204
+      ],
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "photos delete",
+      "method": "DELETE",
+      "path": "/api/v2/photos/2",
+      "status": 204,
+      "expected": [
+        204
+      ],
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "contracts delete",
+      "method": "DELETE",
+      "path": "/api/v2/contracts/2",
+      "status": 204,
+      "expected": [
+        204
+      ],
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "properties delete",
+      "method": "DELETE",
+      "path": "/api/v2/properties/2",
+      "status": 204,
+      "expected": [
+        204
+      ],
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "property-types delete",
+      "method": "DELETE",
+      "path": "/api/v2/property-types/5",
+      "status": 204,
+      "expected": [
+        204
+      ],
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "auth delete user",
+      "method": "DELETE",
+      "path": "/api/v2/auth/users/9",
+      "status": 204,
+      "expected": [
+        204
+      ],
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}
